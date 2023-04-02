@@ -8,7 +8,7 @@ def factorise(num):
     while i <= int(num / 2) + 1:
         if num % i == 0:
             p = int(num / i)
-            print('{}={}*{}'.format(num, p, i))
+            print('{:d}={:d}*{:d}'.format(num, p, i))
             break
         else:
             i += 1
@@ -17,7 +17,5 @@ def factorise(num):
 if __name__ == "__main__":
     f_name = sys.argv[1]
     with open(f_name, 'r') as f:
-        for line in f:
-            num = int(line.strip())
-            factorise(num)
-
+        for num in f:
+            factorise(int(num))
