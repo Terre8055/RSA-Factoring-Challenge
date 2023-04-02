@@ -1,0 +1,41 @@
+#!/usr/bin/python3
+
+import sys
+
+
+def is_prime(n):
+    """Check if a number is prime."""
+    if n <= 1:
+        return False
+    elif n <= 3:
+        return True
+    elif n % 2 == 0 or n % 3 == 0:
+        return False
+    i = 5
+    while i * i <= n:
+        if n % i == 0 or n % (i + 2) == 0:
+            return False
+        i += 6
+    return True
+
+
+def rsa_factorise(n):
+    """Find the prime factors of an RSA number."""
+    i = 2
+    while i <= int(n**0.5):
+        if n % i == 0:
+            p = i
+            q = n // i
+            if is_prime(p) and is_prime(q):
+                print('{:d}={:d}*{:d}'.format(n, p, q))
+                return
+        i += 1
+    print(n)
+
+
+if __name__ == "__main__":
+    f_name = sys.argv[1]
+    with open(f_name, 'r') as f:
+        for num in f:
+            rsa_factorise(int(num))
+
