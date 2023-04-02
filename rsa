@@ -1,47 +1,48 @@
 #!/usr/bin/env bash
+#is a challenge
+check_factor()
+{
+	if [ $# -ne 3 ];
+        then
+                args=("$@")
+                count=0
+                num2=1
+                for a in ${args[*]};
+                do
+                        if [ $count -gt 1 ];
+                        then
+                                num2=$(echo $a*$num2 | bc)
+                        fi
+                        count=$((count + 1))
+                done
+        else
+                num2=$3
+        fi
 
-# Define a function to check and compute the factors
-check_factor() {
-  # Check the number of arguments
-  if [ $# -ne 3 ]; then
-    # Compute the product of the factors
-    args=("$@")
-    count=0
-    num2=1
-    for a in ${args[*]}; do
-      if [ $count -gt 1 ]; then
-        num2=$(echo $a*$num2 | bc)
-      fi
-      count=$((count + 1))
-    done
-  else
-    num2=$3
-  fi
+        num1=$2
+        num=$(echo "$1" | tr ':' '=')
 
-  # Determine the larger and smaller factors
-  num1=$2
-  num=$(echo "$1" | tr ':' '=')
-  if [ $num2 -gt $num1 ]; then
-    numcp=$num1
-    num1=$num2
-    num2=$numcp
-  fi
+        result=$(echo "if($num2 > $num1) 1 else 0" | bc)
+	        if ((result == 1)); then
+		        numcp=$num1
+		        num1=$num2
+		        num2=$numcp
+                fi
 
-  # Print the factors
-  echo "$num$num1*$num2"
+        echo "$num$num1*$num2"
 }
 
-# Check the number of arguments
-if [ $# -ne 1 ]; then
-  echo 'Usage: rsa <file>'
-  exit 1
+if [ $# -ne 1 ]
+then
+        echo 'Usage: rsa <file>'
+        exit 1
 else
-  # Process each number in the file
-  while read i; do
-    # Compute the factors using the "factor" command
-    result=$(factor "$i")
-    # Check and print the factors
-    check_factor $result
-  done < "$1"
-fi
 
+        while read i
+        do
+
+                result=$(factor "$i")
+                check_factor $result
+
+        done < "$1"
+fi
