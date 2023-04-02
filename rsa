@@ -1,41 +1,47 @@
-#!/usr/bin/python3
+#!/usr/bin/env bash
 
-import sys
+# Define a function to check and compute the factors
+check_factor() {
+  # Check the number of arguments
+  if [ $# -ne 3 ]; then
+    # Compute the product of the factors
+    args=("$@")
+    count=0
+    num2=1
+    for a in ${args[*]}; do
+      if [ $count -gt 1 ]; then
+        num2=$(echo $a*$num2 | bc)
+      fi
+      count=$((count + 1))
+    done
+  else
+    num2=$3
+  fi
 
+  # Determine the larger and smaller factors
+  num1=$2
+  num=$(echo "$1" | tr ':' '=')
+  if [ $num2 -gt $num1 ]; then
+    numcp=$num1
+    num1=$num2
+    num2=$numcp
+  fi
 
-def is_prime(n):
-    """Check if a number is prime."""
-    if n <= 1:
-        return False
-    elif n <= 3:
-        return True
-    elif n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
-            return False
-        i += 6
-    return True
+  # Print the factors
+  echo "$num$num1*$num2"
+}
 
-
-def rsa_factorise(n):
-    """Find the prime factors of an RSA number."""
-    i = 2
-    while i <= int(n**0.5):
-        if n % i == 0:
-            p = i
-            q = n // i
-            if is_prime(p) and is_prime(q):
-                print('{:d}={:d}*{:d}'.format(n, p, q))
-                return
-        i += 1
-    print(n)
-
-
-if __name__ == "__main__":
-    f_name = sys.argv[1]
-    with open(f_name, 'r') as f:
-        for num in f:
-            rsa_factorise(int(num))
+# Check the number of arguments
+if [ $# -ne 1 ]; then
+  echo 'Usage: rsa <file>'
+  exit 1
+else
+  # Process each number in the file
+  while read i; do
+    # Compute the factors using the "factor" command
+    result=$(factor "$i")
+    # Check and print the factors
+    check_factor $result
+  done < "$1"
+fi
 
